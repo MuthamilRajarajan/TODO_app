@@ -27,6 +27,22 @@ class Login extends StatefulWidget {
 
 class _LoginState extends State<Login> {
 
+  var a= new Map() ;
+
+  void PostReq() async{
+    var url = "http://117.207.16.108:10001/login";
+    var response = await http.post(url,body: json.encode({"email":_email.text,"password":_password.text}),
+        headers:{"Content-Type":"application/json"});
+    print(response.body);
+
+    setState(() {
+      var convertDataToJson = json.decode(response.body);
+      a = convertDataToJson;
+    });
+
+
+  }
+
 
   TextEditingController _email = TextEditingController();
   TextEditingController _password = TextEditingController();
@@ -184,14 +200,12 @@ class _LoginState extends State<Login> {
                             SizedBox(height: 30),
                             RaisedButton(
                               onPressed: (){
-                                var c = Http();
-                                c.PostReq();
+                                PostReq();
                                 if (_form.currentState.validate()) {
-                                  c.PostReq();
                                   print("success");
 
 
-                                  if(_email.text=="tamil@3edge.in"&& _password.text=="tamil"){
+                                  if(a["message"]=="Authorized"){
                                     print("Authorized");
                                     Navigator.push(
                                       context,
@@ -200,21 +214,21 @@ class _LoginState extends State<Login> {
                                   }else{
                                     print("Unauthorized");
                                     showDialog(
-                                      context: context,
-                                      builder: (BuildContext context){
-                                        return AlertDialog(
-                                          title: Text("Warning!"),
-                                          content: Text("Unauthorized Credentials"),
-                                          actions: <Widget>[
-                                            FlatButton(
-                                              child: Text("Close"),
-                                              onPressed: (){
-                                                Navigator.of(context).pop();
-                                              },
-                                            )
-                                          ],
-                                        );
-                                      }
+                                        context: context,
+                                        builder: (BuildContext context){
+                                          return AlertDialog(
+                                            title: Text("Warning!"),
+                                            content: Text("Unauthorized Credentials"),
+                                            actions: <Widget>[
+                                              FlatButton(
+                                                child: Text("Close"),
+                                                onPressed: (){
+                                                  Navigator.of(context).pop();
+                                                },
+                                              )
+                                            ],
+                                          );
+                                        }
                                     );
                                   }
 
@@ -252,25 +266,6 @@ class _LoginState extends State<Login> {
   }
 }
 
-class Http{
-  void PostReq() async{
-    var url = "http://117.193.71.237:10001/login";
-    var response = await http.post(url,body: json.encode({"email":"tamil@3edge.in","password":"tamil"}),
-        headers:{"Content-Type":"application/json"});
-    print(response.body);
-
-
-  }
-  void GetReq() async{
-    var url = "http://117.193.71.237:10001/get/todo/123456";
-    var response = await http.get(url);
-
-    print(response.body);
-  }
-
-}
-
-
 
 
 
@@ -288,7 +283,7 @@ class SecondRoute extends StatefulWidget {
 
 class _SecondRouteState extends State<SecondRoute> {
   List data;
-  final String url ="http://117.193.65.191:10001/get/todo/123456";
+  final String url ="http://117.207.16.108:10001/get/todo/123456";
 
   @override
   void initState(){
@@ -432,16 +427,16 @@ class FourthRoute extends StatelessWidget {
           padding: EdgeInsets.fromLTRB(20,80,20,0),
           child: Column(
             children:<Widget>[
-            TextFormField(
-              controller: _newtask,
-              decoration: InputDecoration(
-                border: OutlineInputBorder(),
-                  labelText: "NEW Task",
-                  labelStyle: TextStyle(color: Colors.black),
-                  hintText: "Enter your Task",
-                  hintStyle: TextStyle(color: Colors.grey[400])
+              TextFormField(
+                controller: _newtask,
+                decoration: InputDecoration(
+                    border: OutlineInputBorder(),
+                    labelText: "NEW Task",
+                    labelStyle: TextStyle(color: Colors.black),
+                    hintText: "Enter your Task",
+                    hintStyle: TextStyle(color: Colors.grey[400])
+                ),
               ),
-            ),
               RaisedButton(
                 onPressed: (){
 
@@ -452,12 +447,10 @@ class FourthRoute extends StatelessWidget {
                 textColor: Colors.white,
                 color: Colors.blueAccent,
               ),
-          ],
+            ],
           ),
         ),
       ),
     );
   }
 }
-
-
