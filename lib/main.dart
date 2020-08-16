@@ -30,7 +30,7 @@ class _LoginState extends State<Login> {
   var a= new Map() ;
 
   void PostReq() async{
-    var url = "http://117.207.16.108:10001/login";
+    var url = "http://117.207.17.179:10001/login";
     var response = await http.post(url,body: json.encode({"email":_email.text,"password":_password.text}),
         headers:{"Content-Type":"application/json"});
     print(response.body);
@@ -200,47 +200,46 @@ class _LoginState extends State<Login> {
                             SizedBox(height: 30),
                             RaisedButton(
                               onPressed: (){
-                                PostReq();
+
                                 if (_form.currentState.validate()) {
                                   print("success");
+                                  PostReq();
 
 
-                                  if(a["message"]=="Authorized"){
-                                    print("Authorized");
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(builder: (context) => SecondRoute()),
-                                    );
-                                  }else{
-                                    print("Unauthorized");
-                                    showDialog(
-                                        context: context,
-                                        builder: (BuildContext context){
-                                          return AlertDialog(
-                                            title: Text("Warning!"),
-                                            content: Text("Unauthorized Credentials"),
-                                            actions: <Widget>[
-                                              FlatButton(
-                                                child: Text("Close"),
-                                                onPressed: (){
-                                                  Navigator.of(context).pop();
-                                                },
-                                              )
-                                            ],
-                                          );
-                                        }
-                                    );
-                                  }
+                                  Timer(Duration(seconds: 3), () {
+                                    if(a["message"]=="Authorized"){
+                                      print("Authorized");
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(builder: (context) => SecondRoute()),
+                                      );
+                                    }else{
+                                      print("Unauthorized");
+                                      showDialog(
+                                          context: context,
+                                          builder: (BuildContext context){
+                                            return AlertDialog(
+                                              title: Text("Warning!"),
+                                              content: Text("Unauthorized Credentials"),
+                                              actions: <Widget>[
+                                                FlatButton(
+                                                  child: Text("Close"),
+                                                  onPressed: (){
+                                                    Navigator.of(context).pop();
+                                                  },
+                                                )
+                                              ],
+                                            );
+                                          }
+                                      );
+                                    }
 
-
-
+                                    print("print after every 3 seconds");
+                                  });
 
                                 } else {
                                   print("error");
                                 }
-
-
-
                               },
 
                               child: new Text("Login"),
@@ -282,8 +281,12 @@ class SecondRoute extends StatefulWidget {
 }
 
 class _SecondRouteState extends State<SecondRoute> {
+
+
   List data;
-  final String url ="http://117.207.16.108:10001/get/todo/123456";
+  var b =new Map();
+  var c =new Map();
+  bool checkBoxValue=false;
 
   @override
   void initState(){
@@ -291,7 +294,9 @@ class _SecondRouteState extends State<SecondRoute> {
     this.getJsonData();
   }
 
+
   Future<String> getJsonData() async {
+    var url = "http://117.207.17.179:10001/get/todo/123456";
     var response = await http.get(
         Uri.encodeFull(url),
         headers:  {"Accept":"application/json"}
@@ -301,6 +306,22 @@ class _SecondRouteState extends State<SecondRoute> {
     setState(() {
       var convertDataToJson = json.decode(response.body);
       data = convertDataToJson;
+    });
+
+    return "Success";
+  }
+
+  Future<String> getJsonDataStatus() async {
+    var url = "http://117.207.17.179:10001/get/todo/123456";
+    var response = await http.get(
+        Uri.encodeFull(url),
+        headers:  {"Accept":"application/json"}
+    );
+    print(response.body);
+
+    setState(() {
+      var convertDataToJson = json.decode(response.body);
+      c = convertDataToJson;
     });
 
     return "Success";
@@ -338,9 +359,21 @@ class _SecondRouteState extends State<SecondRoute> {
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: <Widget>[
                   Card(
-                    child: Container(
-                      child: Text(data[index]['todo']),
-                      padding: EdgeInsets.all(20),
+                    elevation:5,
+                    child: ListTile(
+                      contentPadding: EdgeInsets.all(3),
+                      leading: Checkbox(
+
+                        value: checkBoxValue,
+                        onChanged: (bool value){
+                          setState(() {
+                            checkBoxValue=value;
+                          });
+                        },
+
+                      ),
+                      title: Text(data[index]['todo']),
+
 
                     ),
                   ),
@@ -351,6 +384,7 @@ class _SecondRouteState extends State<SecondRoute> {
         },
 
       ),
+
 
 
 
@@ -388,12 +422,44 @@ class _SecondRouteState extends State<SecondRoute> {
 
 
 
-class ThirdRoute extends StatelessWidget {
+
+
+class ThirdRoute extends StatefulWidget {
+  @override
+  _ThirdRouteState createState() => _ThirdRouteState();
+}
+
+class _ThirdRouteState extends State<ThirdRoute> {
+  List data;
+  List completed= List();
+  bool checkBoxValue=true;
+  var e= new Map();
+
+
+
+  Future<String> getJsonData() async {
+    var url = "http://117.207.17.179:10001/get/todo/123456";
+    var response = await http.get(
+        Uri.encodeFull(url),
+        headers:  {"Accept":"application/json"}
+    );
+    print(response.body);
+
+    setState(() {
+      var convertDataToJson = json.decode(response.body);
+      data = convertDataToJson;
+    });
+
+    return "Success";
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text("Completed Tasks List"),
+      ),
+      body: ListView(
+
       ),
 
     );
@@ -412,11 +478,36 @@ class ThirdRoute extends StatelessWidget {
 
 
 
-class FourthRoute extends StatelessWidget {
+
+
+class FourthRoute extends StatefulWidget {
   @override
+  _FourthRouteState createState() => _FourthRouteState();
+}
+
+class _FourthRouteState extends State<FourthRoute> {
+
+  List todos =List();
 
   TextEditingController _newtask = TextEditingController();
 
+  var d =new Map();
+
+  void addToList() async{
+    var url = "http://117.207.17.179:10001/add/todo/123456";
+    var response = await http.post(url,body: json.encode({"todo":_newtask.text,"completed":false}),
+        headers:{"Content-Type":"application/json"});
+    print(response.body);
+
+
+    setState(() {
+      var convertDataToJson = json.decode(response.body);
+      d = convertDataToJson;
+    });
+  }
+
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
@@ -439,9 +530,40 @@ class FourthRoute extends StatelessWidget {
               ),
               RaisedButton(
                 onPressed: (){
+                  addToList();
+                  Timer(Duration(seconds: 3),(){
+                    if(d["message"]=="success"){
+                      print("Valid message");
+                      setState(() {
+                        todos.add(_newtask);
+                      });
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => SecondRoute()),
+                      );
 
+                    }else{
+                      print("Invalid message");
+                      showDialog(
+                          context: context,
+                          builder: (BuildContext context){
+                            return AlertDialog(
+                              title: Text("Warning!"),
+                              content: Text("Invalid Data"),
+                              actions: <Widget>[
+                                FlatButton(
+                                  child: Text("Close"),
+                                  onPressed: (){
+                                    Navigator.of(context).pop();
+                                  },
+                                )
+                              ],
+                            );
+                          }
+                      );
 
-
+                    }
+                  });
                 },
                 child: new Text("Add to List"),
                 textColor: Colors.white,
@@ -454,3 +576,8 @@ class FourthRoute extends StatelessWidget {
     );
   }
 }
+
+
+
+
+
