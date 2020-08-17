@@ -30,7 +30,7 @@ class _LoginState extends State<Login> {
   var a= new Map() ;
 
   void PostReq() async{
-    var url = "http://117.207.17.179:10001/login";
+    var url = "http://117.193.69.102:10001/login";
     var response = await http.post(url,body: json.encode({"email":_email.text,"password":_password.text}),
         headers:{"Content-Type":"application/json"});
     print(response.body);
@@ -296,7 +296,7 @@ class _SecondRouteState extends State<SecondRoute> {
 
 
   Future<String> getJsonData() async {
-    var url = "http://117.207.17.179:10001/get/todo/123456";
+    var url = "http://117.193.69.102:10001/get/todo/123456";
     var response = await http.get(
         Uri.encodeFull(url),
         headers:  {"Accept":"application/json"}
@@ -312,7 +312,7 @@ class _SecondRouteState extends State<SecondRoute> {
   }
 
   Future<String> getJsonDataStatus() async {
-    var url = "http://117.207.17.179:10001/get/todo/123456";
+    var url = "http://117.193.69.102:10001/get/todo/123456";
     var response = await http.get(
         Uri.encodeFull(url),
         headers:  {"Accept":"application/json"}
@@ -438,7 +438,7 @@ class _ThirdRouteState extends State<ThirdRoute> {
 
 
   Future<String> getJsonData() async {
-    var url = "http://117.207.17.179:10001/get/todo/123456";
+    var url = "http://117.193.69.102:10001/get/todo/123456";
     var response = await http.get(
         Uri.encodeFull(url),
         headers:  {"Accept":"application/json"}
@@ -494,7 +494,7 @@ class _FourthRouteState extends State<FourthRoute> {
   var d =new Map();
 
   void addToList() async{
-    var url = "http://117.207.17.179:10001/add/todo/123456";
+    var url = "http://117.193.69.102:10001/add/todo/123456";
     var response = await http.post(url,body: json.encode({"todo":_newtask.text,"completed":false}),
         headers:{"Content-Type":"application/json"});
     print(response.body);
