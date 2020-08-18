@@ -30,7 +30,7 @@ class _LoginState extends State<Login> {
   var a= new Map() ;
 
   void PostReq() async{
-    var url = "http://117.193.64.41:10001/login";
+    var url = "http://13.233.250.194:8080/login";
     var response = await http.post(url,body: json.encode({"email":_email.text,"password":_password.text}),
         headers:{"Content-Type":"application/json"});
     print(response.body);
@@ -275,6 +275,13 @@ class _LoginState extends State<Login> {
 
 
 
+
+
+
+
+
+
+
 class SecondRoute extends StatefulWidget {
   @override
   _SecondRouteState createState() => _SecondRouteState();
@@ -286,7 +293,7 @@ class _SecondRouteState extends State<SecondRoute> {
   List data;
   var b =new Map();
   var c =new Map();
-  bool checkBoxValue=false;
+  bool checkBoxValue;
 
   @override
   void initState(){
@@ -296,7 +303,7 @@ class _SecondRouteState extends State<SecondRoute> {
 
 
   Future<String> getJsonData() async {
-    var url = "http://117.193.64.41:10001/get/todo/123456";
+    var url = "http://13.233.250.194:8080/get/todo/123456";
     var response = await http.get(
         Uri.encodeFull(url),
         headers:  {"Accept":"application/json"}
@@ -308,24 +315,12 @@ class _SecondRouteState extends State<SecondRoute> {
       data = convertDataToJson;
     });
 
-    return "Success";
-  }
-
-  Future<String> getJsonDataStatus() async {
-    var url = "http://117.193.64.41:10001/get/todo/123456";
-    var response = await http.get(
-        Uri.encodeFull(url),
-        headers:  {"Accept":"application/json"}
-    );
-    print(response.body);
-
-    setState(() {
-      var convertDataToJson = json.decode(response.body);
-      c = convertDataToJson;
-    });
 
     return "Success";
   }
+
+
+
 
 
 
@@ -340,7 +335,49 @@ class _SecondRouteState extends State<SecondRoute> {
             onPressed: (){
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => ThirdRoute()),
+                MaterialPageRoute(builder: (context) {
+                  return Scaffold(
+                    appBar: AppBar(
+                      title: Text("Completed Tasks List"),
+                    ),
+                    body: ListView.builder(
+                      itemCount: data == null?  0 : data.length,
+                      itemBuilder: (BuildContext context,int index){
+                        return Container(
+                          child: data[index]['completed']==false? new Container(): new Container(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.stretch,
+                              children: <Widget>[
+                                Card(
+                                  elevation:5,
+                                  child: ListTile(
+                                    contentPadding: EdgeInsets.all(3),
+                                    leading: Checkbox(
+
+                                      value: data[index]['completed'],
+                                      onChanged: (bool value){
+                                        setState(() {
+                                          data[index]['completed']=value;
+
+                                        });
+                                      },
+
+                                    ),
+                                    title: Text(data[index]['todo']),
+
+
+
+                                  ),
+                                ),
+                              ],
+                            ),
+                          )
+                        );
+                      },
+
+                    ),
+                  );
+                }),
               );
 
 
@@ -354,32 +391,36 @@ class _SecondRouteState extends State<SecondRoute> {
         itemCount: data == null?  0 : data.length,
         itemBuilder: (BuildContext context,int index){
           return Container(
-            child: Center(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: <Widget>[
-                  Card(
-                    elevation:5,
-                    child: ListTile(
-                      contentPadding: EdgeInsets.all(3),
-                      leading: Checkbox(
+            child: data[index]['completed']==true? new Container():new Container(
+              child: Center(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: <Widget>[
+                    Card(
+                      elevation:5,
+                      child: ListTile(
+                        contentPadding: EdgeInsets.all(3),
+                        leading: Checkbox(
 
-                        value: checkBoxValue,
-                        onChanged: (bool value){
-                          setState(() {
-                            checkBoxValue=value;
-                          });
-                        },
+                          value: data[index]['completed'],
+                          onChanged: (bool value){
+                            setState(() {
+
+                              data[index]['completed']=value;
+
+                            });
+                          },
+
+                        ),
+                        title: Text(data[index]['todo']),
+
 
                       ),
-                      title: Text(data[index]['todo']),
-
-
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
-            ),
+            )
           );
         },
 
@@ -424,50 +465,6 @@ class _SecondRouteState extends State<SecondRoute> {
 
 
 
-class ThirdRoute extends StatefulWidget {
-  @override
-  _ThirdRouteState createState() => _ThirdRouteState();
-}
-
-class _ThirdRouteState extends State<ThirdRoute> {
-  List data;
-  List completed= List();
-  bool checkBoxValue=true;
-  var e= new Map();
-
-
-
-  Future<String> getJsonData() async {
-    var url = "http://117.193.64.41:10001/get/todo/123456";
-    var response = await http.get(
-        Uri.encodeFull(url),
-        headers:  {"Accept":"application/json"}
-    );
-    print(response.body);
-
-    setState(() {
-      var convertDataToJson = json.decode(response.body);
-      data = convertDataToJson;
-    });
-
-    return "Success";
-  }
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text("Completed Tasks List"),
-      ),
-      body: ListView(
-
-      ),
-
-    );
-  }
-}
-
-
-
 
 
 
@@ -489,12 +486,14 @@ class _FourthRouteState extends State<FourthRoute> {
 
   List todos =List();
 
+
   TextEditingController _newtask = TextEditingController();
 
   var d =new Map();
 
   void addToList() async{
-    var url = "http://117.193.64.41:10001/add/todo/123456";
+
+    var url = "http://13.233.250.194:8080/add/todo/123456";
     var response = await http.post(url,body: json.encode({"todo":_newtask.text,"completed":false}),
         headers:{"Content-Type":"application/json"});
     print(response.body);
@@ -532,7 +531,7 @@ class _FourthRouteState extends State<FourthRoute> {
                 onPressed: (){
                   addToList();
                   Timer(Duration(seconds: 3),(){
-                    if(d["message"]=="success"){
+                    if(d["message"]=="Todo created successfully"){
                       print("Valid message");
                       setState(() {
                         todos.add(_newtask);
