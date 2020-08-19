@@ -291,6 +291,9 @@ class _SecondRouteState extends State<SecondRoute> {
 
 
   List data;
+  List todos =List();
+  List completed =List();
+
   var b =new Map();
   var c =new Map();
   bool checkBoxValue;
@@ -317,6 +320,21 @@ class _SecondRouteState extends State<SecondRoute> {
 
 
     return "Success";
+  }
+  void changeData(int index) async{
+
+
+    var url = "http://13.233.250.194:8080/change/todo/123456";
+    var response = await http.post(url,body: json.encode({"id":data[index]['id'],"completed":data[index]['completed']}),
+        headers:{"Content-Type":"application/json"});
+    print(response.body);
+
+    setState(() {
+      var convertDataToJson = json.decode(response.body);
+      b = convertDataToJson;
+    });
+
+
   }
 
 
@@ -356,10 +374,19 @@ class _SecondRouteState extends State<SecondRoute> {
 
                                       value: data[index]['completed'],
                                       onChanged: (bool value){
-                                        setState(() {
-                                          data[index]['completed']=value;
+                                        changeData(0);
+                                        if(b['message']=='success'){
+                                          setState(() {
+                                            data[index]['completed']=value;
+                                            value=checkBoxValue;
+                                            todos.add(data[index]['todo']);
 
-                                        });
+                                          });
+
+                                        }else{
+                                          return null;
+                                        }
+
                                       },
 
                                     ),
@@ -404,11 +431,21 @@ class _SecondRouteState extends State<SecondRoute> {
 
                           value: data[index]['completed'],
                           onChanged: (bool value){
-                            setState(() {
+                            changeData(0);
+                            if(b['message']=='success'){
+                              setState(() {
 
-                              data[index]['completed']=value;
+                                data[index]['completed']=value;
+                                value=checkBoxValue;
+                                completed.add(data[index]['todo']);
 
-                            });
+                              });
+
+                            }else{
+                              return null;
+                            }
+
+
                           },
 
                         ),
