@@ -374,7 +374,7 @@ class _SecondRouteState extends State<SecondRoute> {
 
                                       value: data[index]['completed'],
                                       onChanged: (bool value){
-                                        changeData(0);
+                                        changeData(index);
                                         if(b['message']=='success'){
                                           setState(() {
                                             data[index]['completed']=value;
@@ -431,7 +431,7 @@ class _SecondRouteState extends State<SecondRoute> {
 
                           value: data[index]['completed'],
                           onChanged: (bool value){
-                            changeData(0);
+                            changeData(index);
                             if(b['message']=='success'){
                               setState(() {
 
