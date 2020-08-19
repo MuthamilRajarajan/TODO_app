@@ -291,8 +291,6 @@ class _SecondRouteState extends State<SecondRoute> {
 
 
   List data;
-  List todos =List();
-  List completed =List();
 
   var b =new Map();
   var c =new Map();
@@ -375,11 +373,12 @@ class _SecondRouteState extends State<SecondRoute> {
                                       value: data[index]['completed'],
                                       onChanged: (bool value){
                                         changeData(index);
+
                                         if(b['message']=='success'){
+
                                           setState(() {
                                             data[index]['completed']=value;
-                                            value=checkBoxValue;
-                                            todos.add(data[index]['todo']);
+
 
                                           });
 
@@ -436,8 +435,7 @@ class _SecondRouteState extends State<SecondRoute> {
                               setState(() {
 
                                 data[index]['completed']=value;
-                                value=checkBoxValue;
-                                completed.add(data[index]['todo']);
+
 
                               });
 
