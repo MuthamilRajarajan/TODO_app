@@ -326,6 +326,8 @@ class _SecondRouteState extends State<SecondRoute> {
     var response = await http.post(url,body: json.encode({"id":data[index]['id'],"completed":data[index]['completed']}),
         headers:{"Content-Type":"application/json"});
     print(response.body);
+    print(data[index]['id']);
+    print(data[index]['completed']);
 
     setState(() {
       var convertDataToJson = json.decode(response.body);
@@ -372,6 +374,7 @@ class _SecondRouteState extends State<SecondRoute> {
 
                                       value: data[index]['completed'],
                                       onChanged: (bool value){
+
                                         changeData(index);
 
                                         if(b['message']=='success'){
