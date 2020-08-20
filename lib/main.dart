@@ -309,7 +309,7 @@ class _SecondRouteState extends State<SecondRoute> {
         Uri.encodeFull(url),
         headers:  {"Accept":"application/json"}
     );
-    print(response.body);
+
 
     setState(() {
       var convertDataToJson = json.decode(response.body);
@@ -370,28 +370,14 @@ class _SecondRouteState extends State<SecondRoute> {
                                   elevation:5,
                                   child: ListTile(
                                     contentPadding: EdgeInsets.all(3),
-                                    leading: Checkbox(
-
-                                      value: data[index]['completed'],
-                                      onChanged: (bool value){
-
+                                    leading: data[index]['completed']==true? Icon(Icons.check):Icon(Icons.radio_button_unchecked),
+                                    onTap: (){
+                                      if(data[index]['completed']==true){
+                                        data[index]['completed']=false;
                                         changeData(index);
+                                      }
+                                    },
 
-                                        if(b['message']=='success'){
-
-                                          setState(() {
-                                            data[index]['completed']=value;
-
-
-                                          });
-
-                                        }else{
-                                          return null;
-                                        }
-
-                                      },
-
-                                    ),
                                     title: Text(data[index]['todo']),
 
 
@@ -429,27 +415,13 @@ class _SecondRouteState extends State<SecondRoute> {
                       elevation:5,
                       child: ListTile(
                         contentPadding: EdgeInsets.all(3),
-                        leading: Checkbox(
-
-                          value: data[index]['completed'],
-                          onChanged: (bool value){
+                        leading: data[index]['completed']==false? Icon(Icons.radio_button_unchecked):Icon(Icons.check),
+                        onTap: (){
+                          if(data[index]['completed']==false){
+                            data[index]['completed']=true;
                             changeData(index);
-                            if(b['message']=='success'){
-                              setState(() {
-
-                                data[index]['completed']=value;
-
-
-                              });
-
-                            }else{
-                              return null;
-                            }
-
-
-                          },
-
-                        ),
+                          }
+                        },
                         title: Text(data[index]['todo']),
 
 
